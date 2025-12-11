@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>All Users</title>
+</head>
+<body>
+<h1>Users:</h1>
+<br>
+<table th:border="1" th:width="500px" th:content="center">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Update</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.username}"></td>
+        <td th:text="${user.email}"></td>
+        <td>
+            <button type="button"><a th:href="@{/admin/update(id=${user.id})}" class="button">Update</a></button>
+        </td>
+        <td>
+            <button type="button"><a th:href="@{/admin/delete(id=${user.id})}" class="button_delete">Delete</a></button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<button type="button">
+    <a href="/admin/createUser" class="button">Create new user</a>
+</button>
+<br> <br>
+<button type="button">
+    <a href="/logout" class="button">Logout</a>
+</button>
+</body>
+</html>
