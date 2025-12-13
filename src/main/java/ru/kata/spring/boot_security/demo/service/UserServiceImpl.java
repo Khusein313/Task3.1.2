@@ -17,14 +17,11 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
 
@@ -36,24 +33,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /*Это метод который нам даёт UserDetailsService
-      Мы можем передать системе 'username' параметр и он нам выдаст пользователя
-         У выданного пользователя через интерфейс UserService мы можем получать его данные
-         (Имя = getUsername() /Пароль = getPassword() /ПраваДоступа getAuthorities и доп. boolean-методы о статусе акк-нта*/
-    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {             //если не найдёшь такого юзера то выброси исключение!
-            throw new UsernameNotFoundException(String.format("User '%s' not found", username)); //вывод "User 'username' not found"
-        }
-
-        return new org.springframework.security.core.userdetails.User(      //Берем юзера из базы и переводим его в язык понятный для Spring
-                user.getUsername(),                                 //Указываем Спрингу имя пользователя
-                user.getPassword(),                                 //Указываем Спрингу пароль пользователя
-                mapRolesToAuthorities(user.getRoles())          //Указываем Спрингу Права юзера (из метода ниже!)
-        );
-
+        Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username));
+        return user.orElseThrow(() -> new UsernameNotFoundException(String.format("User '%s' not found", username)));
     }
+
+//    /*Это метод который нам даёт UserDetailsService
+//      Мы можем передать системе 'username' параметр и он нам выдаст пользователя
+//         У выданного пользователя через интерфейс UserService мы можем получать его данные
+//         (Имя = getUsername() /Пароль = getPassword() /ПраваДоступа getAuthorities и доп. boolean-методы о статусе акк-нта*/
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        User user = userRepository.findByUsername(username);
+//        if (user == null) {             //если не найдёшь такого юзера то выброси исключение!
+//            throw new UsernameNotFoundException(String.format("User '%s' not found", username)); //вывод "User 'username' not found"
+//        }
+//
+//        return new org.springframework.security.core.userdetails.User(      //Берем юзера из базы и переводим его в язык понятный для Spring
+//                user.getUsername(),                                 //Указываем Спрингу имя пользователя
+//                user.getPassword(),                                 //Указываем Спрингу пароль пользователя
+//                mapRolesToAuthorities(user.getRoles())          //Указываем Спрингу Права юзера (из метода ниже!)
+//        );
+//
+//    }
 
     //Метод позволяет из переданного списка 'roles' получить GrantedAuthority
     //Это обязательно, т.к Спринг понимает только так данные о юзере
@@ -103,17 +105,30 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return (User) authentication.getPrincipal();
     }
 
+//
+//    @Override
+//    @Transactional
+//    public void updateUser(Long id, User user) {
+//        User existingUser = userRepository.findById(id)
+//                .orElseThrow(() -> new UsernameNotFoundException("User  not found"));
+//        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+//            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+//        }
+//        existingUser.setUsername(user.getUsername());
+//        existingUser.setEmail(user.getEmail());
+//        userRepository.save(existingUser);
+//    }
     @Override
     @Transactional
     public void updateUser(Long id, User user) {
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User  not found"));
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        String password = user.getPassword();
+        if (password.trim().isEmpty()) {
+            password = Objects.requireNonNull(userRepository.findById(id).orElse(null)).getPassword();
+            user.setPassword(passwordEncoder.encode(password));
+        } else {
+            user.setPassword(passwordEncoder.encode(password));
         }
-        existingUser.setUsername(user.getUsername());
-        existingUser.setEmail(user.getEmail());
-        userRepository.save(existingUser);
+        userRepository.save(user);
     }
 
     @Override

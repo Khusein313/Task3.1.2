@@ -15,16 +15,17 @@ import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHandler successUserHandler;
-
+    private final PasswordEncoder passwordEncoder;
     private final UserServiceImpl userServiceImpl;
 
-    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserServiceImpl userService) {
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserServiceImpl userServiceImpl, PasswordEncoder passwordEncoder) {
         this.successUserHandler = successUserHandler;
-        this.userServiceImpl = userService;
+        this.userServiceImpl = userServiceImpl;
+        this.passwordEncoder = passwordEncoder;
     }
 
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userServiceImpl).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userServiceImpl).passwordEncoder(passwordEncoder);
     }
 
 
@@ -44,18 +45,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-    @Bean
-    //Метод для перевода введенного пароля пользователя в BCrypt для безопасности
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();         //преобразует в хеш все пароли
-    }
+
 
     // аутентификация userDetailService через DaoProvider
     // метод позволяет использовать уже имеющиеся таблицы и сущности, чтоб они использовались для аутентификации
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 //Важно! Предоставит Спрингу данные юзера и вставляет его в SpringSecurityContext если он существует. Всё это мы обработали в UserService + метод loadUserByUsername()
         daoAuthenticationProvider.setUserDetailsService(userServiceImpl);
 //Этот пункт просто для преобразования паролей

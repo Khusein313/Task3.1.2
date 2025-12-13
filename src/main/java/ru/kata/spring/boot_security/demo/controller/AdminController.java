@@ -28,31 +28,31 @@ public class AdminController {
     }
 
     @GetMapping(value = "/createUser")
-    public String GETcreateUser(Model model) {
+    public String getCreateUser(Model model) {
         model.addAttribute("user", new User());
         return "newUser";
     }
 
     @PostMapping("/createUser")
-    public String POSTcreateUser(@ModelAttribute User user, @RequestParam(value = "role") Set<Role> roles) {
-        userService.saveUser(userService.createUser(user, roles));
+    public String postCreateUser(@ModelAttribute User user) {
+        userService.saveUser(userService.createUser(user, user.getRoles()));
         return "redirect:/admin/";
     }
 
     @GetMapping(value = "/update")
-    public String GETupdate(@RequestParam(value = "id") long id, Model model) {
+    public String getUpdate(@RequestParam(value = "id") long id, Model model) {
         model.addAttribute("user", userService.getUserById(id));
         return "update";
     }
 
     @PostMapping(value = "/update")
-    public String POSTupdate(@ModelAttribute("user") User user, @RequestParam("id") Long id) {
+    public String postUpdate(@ModelAttribute("user") User user, @RequestParam("id") Long id) {
         userService.updateUser(id, user);
         return "redirect:/admin";
     }
 
     @GetMapping(value = "/delete")
-    public String GETdelete(@RequestParam("id") Long id) {
+    public String getDelete(@RequestParam("id") Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";
     }
