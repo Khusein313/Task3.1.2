@@ -1,8 +1,16 @@
 package ru.kata.spring.boot_security.demo.model;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -75,7 +83,7 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    //Методы от интерфейса UserDetails - который получает основные данные и статус аккаунта пользователя для считывания Спрингом
+    //Методы от интерфейса UserDetails - который получает основные данные и статус аккаунта пользователя для считывания Spring'ом
     @Override
     public boolean isAccountNonExpired() {
         return true;

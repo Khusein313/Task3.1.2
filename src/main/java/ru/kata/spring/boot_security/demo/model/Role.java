@@ -1,8 +1,11 @@
 package ru.kata.spring.boot_security.demo.model;
 
 import org.springframework.security.core.GrantedAuthority;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "roles")
@@ -41,7 +44,8 @@ public class Role implements GrantedAuthority {
     public void setName(String name) {
         this.name = name;
     }
-//метод от интерфейса GrantedAuthority - Спринг получает информацию о Правах доступа
+
+    //метод от интерфейса GrantedAuthority - Spring получает информацию о Правах доступа
     @Override
     public String getAuthority() {
         return getName();

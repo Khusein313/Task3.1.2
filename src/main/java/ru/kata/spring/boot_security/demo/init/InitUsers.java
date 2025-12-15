@@ -14,9 +14,9 @@ import java.util.Optional;
 @Component
 public class InitUsers implements CommandLineRunner {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     PasswordEncoder passwordEncoder;
 
@@ -27,14 +27,14 @@ public class InitUsers implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
-    //метод от импл.интерфейса
+    //метод от интерфейса
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Role admin = createRoleIfNotExists("ROLE_ADMIN");
         Role user = createRoleIfNotExists("ROLE_USER");
 
-        createUserIfNotExists("admin","admin@mail.ru", "admin", admin);
-        createUserIfNotExists("user","user@gmail.com", "user", user);
+        createUserIfNotExists("admin", "admin@mail.ru", "admin", admin);
+        createUserIfNotExists("user", "user@gmail.com", "user", user);
     }
 
     private Role createRoleIfNotExists(String roleName) {
@@ -48,7 +48,7 @@ public class InitUsers implements CommandLineRunner {
         }
     }
 
-    private void createUserIfNotExists(String username,String email, String password, Role role) {
+    private void createUserIfNotExists(String username, String email, String password, Role role) {
         if (!userRepository.existsByUsername(username)) {
             User user = new User();
             user.setUsername(username);
