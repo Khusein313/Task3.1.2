@@ -14,7 +14,6 @@ import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -75,15 +74,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(Long id, User user) {
-        String password = user.getPassword();
-        if (password.trim().isEmpty()) {
-            password = Objects.requireNonNull(userRepository.findById(id).orElse(null)).getPassword();
-            user.setPassword(passwordEncoder.encode(password));
-        } else {
-            user.setPassword(passwordEncoder.encode(password));
+    public void updateUser(User user) {
+        Optional<User> optionalExistingUser = userRepository.findById(user.getId());
+
+        User thisUser = optionalExistingUser.get();
+        thisUser.setUsername(user.getUsername());
+
+        if (!user.getPassword().isEmpty()) {
+            thisUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        userRepository.save(user);
+        if (!user.getRoles().isEmpty()) {
+            thisUser.setRoles(user.getRoles());
+        }
+        thisUser.setUsername(user.getUsername());
+        thisUser.setEmail(user.getEmail());
+        userRepository.save(thisUser);
     }
 
     @Override

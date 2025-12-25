@@ -10,4 +10,5 @@ import java.util.Optional;
 //JpaRepository - save(), findById(), findAll(), delete(), и т.д
 public interface RoleRepository extends JpaRepository<Role, Long> { //JpaRepository предоставляет методы CRUD, чтоб мы их не переписывали по новой
     Optional<Role> findByName(String name);         //только этот метод дописываем, так как его нет в JpaRepository
+
 }

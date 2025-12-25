@@ -33,8 +33,11 @@ public class InitUsers implements CommandLineRunner {
         Role admin = createRoleIfNotExists("ROLE_ADMIN");
         Role user = createRoleIfNotExists("ROLE_USER");
 
+
         createUserIfNotExists("admin", "admin@mail.ru", "admin", admin);
         createUserIfNotExists("user", "user@gmail.com", "user", user);
+        createUserIfNotExists("asd", "asd@mail.ru", "asd", admin);
+        createUserIfNotExists("usd", "usd@mail.ru", "usd", user);
     }
 
     private Role createRoleIfNotExists(String roleName) {
