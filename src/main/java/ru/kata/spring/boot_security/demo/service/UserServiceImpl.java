@@ -3,8 +3,6 @@ package ru.kata.spring.boot_security.demo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +12,7 @@ import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -30,10 +28,6 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
-        return user.orElseThrow(() -> new UsernameNotFoundException(String.format("User '%s' not found", username)));
-    }
 
     @Override
     public List<User> findAllUsers() {
@@ -74,21 +68,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(User user) {
-        Optional<User> optionalExistingUser = userRepository.findById(user.getId());
-
-        User thisUser = optionalExistingUser.get();
-        thisUser.setUsername(user.getUsername());
-
-        if (!user.getPassword().isEmpty()) {
-            thisUser.setPassword(passwordEncoder.encode(user.getPassword()));
+    public void updateUser(Long id, User user) {
+        String password = user.getPassword();
+        if (password.trim().isEmpty()) {
+            password = Objects.requireNonNull(userRepository.findById(id).orElse(null)).getPassword();
+            user.setPassword(passwordEncoder.encode(password));
+        } else {
+            user.setPassword(passwordEncoder.encode(password));
         }
-        if (!user.getRoles().isEmpty()) {
-            thisUser.setRoles(user.getRoles());
-        }
-        thisUser.setUsername(user.getUsername());
-        thisUser.setEmail(user.getEmail());
-        userRepository.save(thisUser);
+        userRepository.save(user);
     }
 
     @Override
