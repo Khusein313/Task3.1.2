@@ -8,17 +8,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import ru.kata.spring.boot_security.demo.service.MyUserDetails;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final SuccessUserHandler successUserHandler;
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final PasswordEncoder passwordEncoder;
     private final MyUserDetails myUserDetails;
 
-    public WebSecurityConfig(SuccessUserHandler successUserHandler, MyUserDetails myUserDetails, PasswordEncoder passwordEncoder) {
-        this.successUserHandler = successUserHandler;
+    public WebSecurityConfig(AuthenticationSuccessHandler successUserHandler, MyUserDetails myUserDetails, PasswordEncoder passwordEncoder) {
+        this.authenticationSuccessHandler = successUserHandler;
         this.myUserDetails = myUserDetails;
         this.passwordEncoder = passwordEncoder;
     }
@@ -29,17 +30,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/users/**").hasAnyRole("ADMIN")
+                .antMatchers("/auth/login", "/logout").permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().successHandler(successUserHandler)
-                .permitAll()
+                .formLogin().loginPage("/auth/login")
+                .loginProcessingUrl("/process_login")
+                .successHandler(authenticationSuccessHandler)
+                .failureUrl("/auth/login?error=true")
                 .and()
                 .logout()
-                .permitAll();
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login");
     }
 
     // аутентификация userDetailService через DaoProvider

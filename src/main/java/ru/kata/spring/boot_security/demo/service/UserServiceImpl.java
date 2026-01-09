@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,36 +13,61 @@ import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
+    @Lazy
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
 
     @Override
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
-    @Override
     @Transactional
+    @Override
     public void saveUser(User user) {
         userRepository.save(user);
     }
 
     @Override
-    @Transactional
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void updateUser(Long id, User user) {
+        User oldUser = userRepository.findById(id).orElse(null);
+        assert oldUser != null;
+        oldUser.setUsername(user.getUsername());
+        oldUser.setEmail(user.getEmail());
+        oldUser.setPassword(user.getPassword());
+        oldUser.setRoles(user.getRoles());
+        userRepository.save(oldUser);
+    }
+
+    @Override
+    public User getInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
+    }
+
+
+    @Override
     public User createUser(User user, Set<Role> roles) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Set<Role> roleSet = new HashSet<>();
@@ -55,36 +81,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(long id) {
-        return userRepository.findById(id).orElse(null);
-    }
+    public User updateUser(User user, Set<Role> roles, Long id) {
+        User oldUser = getUserById(id);
+        String oldPassword = oldUser.getPassword();
+        String newPassword = user.getPassword();
 
-    @Override
-    public User getInfo() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (User) authentication.getPrincipal();
-    }
+        if (newPassword != null && !newPassword.isEmpty() && !passwordEncoder.matches(newPassword, oldPassword)) {
 
-
-    @Override
-    @Transactional
-    public void updateUser(Long id, User user) {
-        String password = user.getPassword();
-        if (password.trim().isEmpty()) {
-            password = Objects.requireNonNull(userRepository.findById(id).orElse(null)).getPassword();
-            user.setPassword(passwordEncoder.encode(password));
+            user.setPassword(passwordEncoder.encode(newPassword));
         } else {
-            user.setPassword(passwordEncoder.encode(password));
+            user.setPassword(oldPassword);
         }
-        userRepository.save(user);
+
+        Set<Role> roleSet = new HashSet<>();
+
+        if (roles == null || roles.isEmpty()) {
+            roleSet = oldUser.getRoles();
+        } else {
+            for (Role role : roles) {
+                if (role != null) {
+                    roleSet.add(role);
+                }
+            }
+        }
+
+        user.setRoles(roleSet);
+        return user;
     }
 
-    @Override
-    @Transactional
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
-    }
 }
+
 
 /*   Это метод который нам даёт UserDetailsService
      Мы можем передать системе 'username' параметр и он нам выдаст пользователя

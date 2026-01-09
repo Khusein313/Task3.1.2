@@ -11,13 +11,15 @@ public interface UserService {
 
     void saveUser(User user);
 
-    User createUser(User user, Set<Role> roles);
+    void deleteUser(Long id);
 
-    User getUserById(long id);
-
-    User getInfo();
+    User getUserById(Long id);
 
     void updateUser(Long id, User user);
 
-    void deleteUser(Long id);
+    User getInfo();
+
+    User createUser(User user, Set<Role> roles);
+
+    User updateUser(User user, Set<Role> roles, Long id);
 }
