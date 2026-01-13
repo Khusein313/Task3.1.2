@@ -21,18 +21,9 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String username;
-
     private String password;
-
     private String email;
-
-    @ManyToMany()                                     //задаём связь с Ролями многие=к=многим
-    @JoinTable(name = "user_roles",                             //создать новую таблицу и связать 2 таблицы через...
-            joinColumns = @JoinColumn(name = "user_id"),                 // 1) колонку user_id
-            inverseJoinColumns = @JoinColumn(name = "role_id"))         // 2) с колонкой role_id
-    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
@@ -42,6 +33,13 @@ public class User implements UserDetails {
         this.password = password;
         this.email = email;
     }
+
+    @ManyToMany()
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
 
     public Long getId() {
         return id;
@@ -53,10 +51,6 @@ public class User implements UserDetails {
 
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
@@ -83,7 +77,6 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    //Методы от интерфейса UserDetails - который получает основные данные и статус аккаунта пользователя для считывания Spring'ом
     @Override
     public boolean isAccountNonExpired() {
         return true;

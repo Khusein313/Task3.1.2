@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
     loadRoles();
 });
 
-// Получение и отображение всех пользователей в таблице
 function fetchUsers() {
     console.log('Fetching users...');
     fetch('/admin/users')
@@ -49,7 +48,6 @@ function fetchUsers() {
         });
 }
 
-// Загрузка ролей и отображение их в селектах
 function loadRoles() {
     console.log('Loading roles...');
     fetch('/admin/users/roles')

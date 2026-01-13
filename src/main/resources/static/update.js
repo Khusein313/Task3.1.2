@@ -1,5 +1,3 @@
-
-// ----------- Открытие модального окна редактирования пользователя и заполнения формы -----------
 function openEditUserPopup(userId) {
     console.log('Opening edit modal for user ID:', userId);
     fetch(`/admin/users/${userId}`)
@@ -26,15 +24,12 @@ function openEditUserPopup(userId) {
         });
 }
 
-// Обработчик отправки формы редактирования пользователя
 document.getElementById('editUserForm').addEventListener('submit', function (event) {
     event.preventDefault();
-
     const formData = new FormData(this);
     const rolesSelected = Array.from(document.getElementById('editRoles').selectedOptions).map(option => ({
         id: parseInt(option.value, 10)
     }));
-
     const user = {
         id: parseInt(formData.get('id'), 10),
         username: formData.get('username'),
@@ -42,9 +37,7 @@ document.getElementById('editUserForm').addEventListener('submit', function (eve
         password: formData.get('password'),
         roles: rolesSelected
     };
-
     console.log('Updating user:', user);
-
     fetch(`/admin/update`, {
         method: 'POST',
         headers: {
@@ -74,7 +67,6 @@ document.getElementById('editUserForm').addEventListener('submit', function (eve
         })
         .catch(error => {
             console.error('Error updating user:', error);
-            // Обработка ошибок для каждого поля
             if (error.errors) {
                 Object.keys(error.errors).forEach(field => {
                     const errorElement = document.getElementById(field + '2-error');
@@ -86,7 +78,6 @@ document.getElementById('editUserForm').addEventListener('submit', function (eve
         });
 });
 
-// Очистка сообщений об ошибках валидации формы
 document.querySelector('#editUserForm button[type="submit"]').addEventListener('click', function () {
     document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
 });

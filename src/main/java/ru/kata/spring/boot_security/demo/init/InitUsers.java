@@ -14,11 +14,8 @@ import java.util.Set;
 
 @Component
 public class InitUsers {
-
     private final UserRepository userRepository;
-
     private final RoleRepository roleRepository;
-
     PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -36,15 +33,13 @@ public class InitUsers {
     Set<Role> setUser = new HashSet<>();
 
     @PostConstruct
-    public void initializationTable() {
+    public void getInitializationTable() {
         roleRepository.save(roleAdmin);
         roleRepository.save(roleUser);
-
         setAdmin.add(roleAdmin);
         setAdmin.add(roleUser);
         admin.setRoles(setAdmin);
         userRepository.save(admin);
-
         setUser.add(roleUser);
         user.setRoles(setUser);
         userRepository.save(user);

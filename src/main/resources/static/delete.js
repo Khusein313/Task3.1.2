@@ -1,6 +1,4 @@
-// ----------------------------- Удаление пользователя --------------------------------------
 function openDeleteUserPopup(userId) {
-    // Получаем данные пользователя
     fetch(`/admin/users/${userId}`)
         .then(response => {
             if (response.ok) {
@@ -18,8 +16,6 @@ function openDeleteUserPopup(userId) {
             Array.from(editRolesSelect.options).forEach(option => {
                 option.selected = user.roles.some(role => role.id === parseInt(option.value, 10));
             });
-
-            // Открываем модальное окно
             openModal('deleteUser');
         })
         .catch(error => {
@@ -38,7 +34,6 @@ document.getElementById('deleteUserForm').addEventListener('submit', function (e
             if (response.ok) {
                 fetchUsers();
                 closeModal('deleteUser');
-                //$('#deleteUser').modal('hide');
             } else {
                 return response.json().then(data => {
                     throw new Error(data.message || 'Не удалось удалить пользователя');

@@ -1,4 +1,4 @@
-package ru.kata.spring.boot_security.demo.exeption_tregulov;
+package ru.kata.spring.boot_security.demo.exeption_handling;
 
 public class UserIncorrectData {
     private String info;

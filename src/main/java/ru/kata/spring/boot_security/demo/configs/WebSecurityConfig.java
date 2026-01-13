@@ -32,9 +32,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth/login", "/logout").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/auth/login", "/logout").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/auth/login")
@@ -47,31 +47,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/login");
     }
 
-    // аутентификация userDetailService через DaoProvider
-    // метод позволяет использовать уже имеющиеся таблицы и сущности, чтоб они использовались для аутентификации
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
+    public DaoAuthenticationProvider getDaoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-//Важно! Предоставит Spring данные юзера и вставляет его в SpringSecurityContext если он существует. Всё это мы обработали в UserService + метод loadUserByUsername()
         daoAuthenticationProvider.setUserDetailsService(myUserDetails);
-//Этот пункт просто для преобразования паролей
         return daoAuthenticationProvider;
     }
 }
-
-
-/* аутентификация inMemory
-    @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withDefaultPasswordEncoder()
-                        .username("user")
-                        .password("user")
-                        .roles("USER")
-                        .build();
-
-        return new InMemoryUserDetailsManager(user);
-    }
- */

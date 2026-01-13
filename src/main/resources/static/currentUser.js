@@ -1,5 +1,3 @@
-
-// --------------------------- Получение и отображение текущего пользователя ------------------------------
 function fetchCurrentUser() {
     console.log('Fetching current user info...');
     fetch('/admin/authUser')

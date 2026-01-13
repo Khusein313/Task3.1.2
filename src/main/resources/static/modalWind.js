@@ -1,11 +1,8 @@
-
-// ------------------------------------- modal windows ----------------------------------------
 document.addEventListener('DOMContentLoaded', function () {
     setupCloseButtons();
     openModal();
 });
 
-// Открытие модального окна
 function openModal(modalId) {
     console.log('Opening modal:', modalId);
     const modal = document.getElementById(modalId);
@@ -17,7 +14,6 @@ function openModal(modalId) {
     }
 }
 
-// Установка обработчиков закрытия модальных окон
 function setupCloseButtons() {
     const closeButtons = document.querySelectorAll('.close-popup');
     closeButtons.forEach(button => {
@@ -30,7 +26,6 @@ function setupCloseButtons() {
         });
     });
 
-    // Закрытие модальных окон при клике на оверлей
     const overlay = document.getElementById('overlay');
     overlay.addEventListener('click', function () {
         const modals = document.querySelectorAll('.modal');
@@ -42,7 +37,6 @@ function setupCloseButtons() {
     });
 }
 
-// Закрытие модального окна
 function closeModal(modalId) {
     console.log('Closing modal:', modalId);
     const modal = document.getElementById(modalId);

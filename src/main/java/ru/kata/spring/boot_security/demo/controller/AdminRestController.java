@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.exeption_tregulov.NoSuchUserException;
+import ru.kata.spring.boot_security.demo.exeption_handling.NoSuchUserException;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
@@ -15,7 +15,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 public class AdminRestController {
-
     private final UserService userService;
     private final RoleService roleService;
 
@@ -26,7 +25,7 @@ public class AdminRestController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> admin() {
+    public ResponseEntity<List<User>> getAdminPage() {
         return new ResponseEntity<>(userService.findAllUsers(), HttpStatus.OK);
     }
 
@@ -41,31 +40,31 @@ public class AdminRestController {
     }
 
     @GetMapping("users/roles")
-    public  ResponseEntity<List<Role>> allRoles() {
-        return new ResponseEntity<>(roleService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<Role>> getAllRoles() {
+        return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/new")
-    public ResponseEntity<HttpStatus> newUser(@RequestBody User user) {
-        userService.saveUser(userService.createUser(user, user.getRoles()));
-        return ResponseEntity.ok(HttpStatus.OK);
+    public ResponseEntity<User> createUserPage(@RequestBody User user) {
+        userService.saveUser(user);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") long id) {
+    public ResponseEntity<Void> deleteUserPage(@PathVariable("id") long id) {
         userService.deleteUser(id);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(value = "/update")
     public ResponseEntity<HttpStatus> update(@RequestBody User user) {
-        userService.updateUser(user.getId(), userService.updateUser(user, user.getRoles(), user.getId()));
+        userService.updateUser(user);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping("/authUser")
-    public ResponseEntity<User> authenticationUser() {
-        User user = userService.getInfo();
+    public ResponseEntity<User> getAuthenticationUserPage() {
+        User user = userService.getUserInfo();
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

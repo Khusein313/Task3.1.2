@@ -11,11 +11,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
 
     public Role() {
@@ -46,11 +44,6 @@ public class Role implements GrantedAuthority {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    //метод от интерфейса GrantedAuthority - Spring получает информацию о Правах доступа
     @Override
     public String getAuthority() {
         return getName();
