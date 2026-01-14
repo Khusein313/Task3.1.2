@@ -22,6 +22,8 @@ function fetchUsers() {
                 row.innerHTML = `
                     <td>${user.id}</td>
                     <td>${user.username}</td>
+                    <td>${user.lastName}</td>
+                    <td>${user.age}</td>
                     <td>${user.email}</td>
                     <td>${user.roles.map(role => role.name.substring(5)).join(", ")}</td> 
                     <td>

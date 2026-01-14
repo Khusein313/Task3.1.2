@@ -11,6 +11,8 @@ function openDeleteUserPopup(userId) {
             // Заполняем поля формы данными пользователя
             document.getElementById('deleteId').value = user.id;
             document.getElementById('deleteUsername').value = user.username;
+            document.getElementById('deleteLastName').value = user.lastName;
+            document.getElementById('deleteAge').value = user.age;
             document.getElementById('deleteEmail').value = user.email;
             const editRolesSelect = document.getElementById('deleteRoles');
             Array.from(editRolesSelect.options).forEach(option => {

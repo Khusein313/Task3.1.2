@@ -23,8 +23,8 @@ public class InitUsers {
         this.passwordEncoder = passwordEncoder;
     }
 
-    User admin = new User("admin", "$2a$12$dXM5XTfXkZKgGVgeJF9Rh.d3SmCdWtXGWOiyEae1QA687MydvZRHK", "admin@mail.ru");
-    User user = new User("user", "$2a$12$reYBI5v/tqYCCt4VLywPEeAEf/do/lnzBwXO16W7fFm3o/PwqlusC", "user@mail.ru");
+    User admin = new User("admin", "admin", 26, "$2a$12$dXM5XTfXkZKgGVgeJF9Rh.d3SmCdWtXGWOiyEae1QA687MydvZRHK", "admin@mail.ru");
+    User user = new User("user", "user", 37, "$2a$12$reYBI5v/tqYCCt4VLywPEeAEf/do/lnzBwXO16W7fFm3o/PwqlusC", "user@mail.ru");
     Role roleAdmin = new Role("ROLE_ADMIN");
     Role roleUser = new Role("ROLE_USER");
     Set<Role> setAdmin = new HashSet<>();

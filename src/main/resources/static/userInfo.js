@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(user => {
             document.getElementById("id").textContent = user.id;
             document.getElementById("username").textContent = user.username;
+            document.getElementById("lastName").textContent = user.lastName;
+            document.getElementById("age").textContent = user.age;
             document.getElementById("email").textContent = user.email;
             let roles = user.authorities.map(role => role.authority.substring(5)).join(", ");
             document.getElementById("roles").textContent = roles;

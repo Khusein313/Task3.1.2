@@ -11,6 +11,8 @@ function openEditUserPopup(userId) {
             console.log('User fetched for edit:', user);
             document.getElementById('editeId').value = user.id;
             document.getElementById('editeUsername').value = user.username;
+            document.getElementById('editeLastName').value = user.lastName;
+            document.getElementById('editeAge').value = user.age;
             document.getElementById('editeEmail').value = user.email;
             const editRolesSelect = document.getElementById('editRoles');
             Array.from(editRolesSelect.options).forEach(option => {
@@ -33,6 +35,8 @@ document.getElementById('editUserForm').addEventListener('submit', function (eve
     const user = {
         id: parseInt(formData.get('id'), 10),
         username: formData.get('username'),
+        lastName: formData.get('lastName'),
+        age: formData.get('age'),
         email: formData.get('email'),
         password: formData.get('password'),
         roles: rolesSelected

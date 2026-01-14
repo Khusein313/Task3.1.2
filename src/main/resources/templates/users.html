@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Spring Boot Security Bootstrap</title>
+    <title>Admin Panel</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         select {
@@ -224,6 +224,8 @@
                                                 <tr>
                                                     <th>ID</th>
                                                     <th>First Name</th>
+                                                    <th>Last Name</th>
+                                                    <th>Age</th>
                                                     <th>Email</th>
                                                     <th>Role</th>
                                                     <th>Edit</th>
@@ -264,6 +266,18 @@
                                     <input type="text" class="form-control" id="editeUsername" name="username"
                                            required>
                                     <div id="firstName2-error" class="error-message text-danger"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editeLastName">Last Name</label>
+                                    <input type="text" class="form-control" id="editeLastName" name="lastName"
+                                           required>
+                                    <div id="lastName2-error" class="error-message text-danger"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editeAge">Age</label>
+                                    <input type="text" class="form-control" id="editeAge" name="age"
+                                           required>
+                                    <div id="age2-error" class="error-message text-danger"></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="editeEmail">Email</label>
@@ -315,6 +329,16 @@
                                            name="username1">
                                 </div>
                                 <div class="form-group">
+                                    <label for="deleteLastName">Last name</label>
+                                    <input type="text" class="form-control disabled-input" id="deleteLastName"
+                                           name="lastName1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="deleteAge">Age</label>
+                                    <input type="text" class="form-control disabled-input" id="deleteAge"
+                                           name="age1">
+                                </div>
+                                <div class="form-group">
                                     <label for="deleteEmail">Email</label>
                                     <input type="email" class="form-control disabled-input" id="deleteEmail"
                                            name="email1">
@@ -345,6 +369,16 @@
                                 <label for="username">First Name</label>
                                 <input type="text" class="form-control" id="username" name="username" required>
                                 <div id="firstName-error" class="error-message text-danger"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName" required>
+                                <div id="lastName-error" class="error-message text-danger"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input type="text" class="form-control" id="age" name="age" required>
+                                <div id="age-error" class="error-message text-danger"></div>
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>

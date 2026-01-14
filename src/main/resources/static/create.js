@@ -6,6 +6,8 @@ document.getElementById('new-user-form').addEventListener('submit', function (ev
     }));
     const user = {
         username: formData.get('username'),
+        lastName: formData.get('lastName'),
+        age: formData.get('age'),
         email: formData.get('email'),
         password: formData.get('password'),
         roles: rolesSelected
